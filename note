@@ -1,0 +1,28 @@
+
+4k-audio-streamer
+gst-launch-1.0 pulsesrc device=alsa_output.OnBoard_D2.monitor ! audioconvert ! lamemp3enc ! shout2send ip=127.0.0.1 port=8000 password=tinker mount=tinker
+codec:opusenc
+
+API-EPSON
+/api/v01/contentmgr/remote/power/off
+/api/v01/contentmgr/remote/power/on
+
+
+MQTT-VIDEOPLAYER CLI
+node app.js verbose=true host=192.168.1.1 username=myUser password=myPass namespace=myNamespace playerId=myPlayer
+
+
+
+
+Max.addHandler("go1-1", () => {
+    var message = {
+        topic: 'myNamespace/mqtt-media-player/Player1-1/play-video',
+        payload: '/home/pi/synctest.mp4', // or a Buffer
+        qos: 0, // 0, 1, or 2
+        retain: false // or true
+    };
+    server.publish(message, function () {
+        //console.log('done!');
+        Max.post("fire video!!");
+    });
+});
