@@ -1,7 +1,6 @@
 const mosca = require('mosca')
 const Max = require('max-api');
 
-
 var moscaSettings = {
     port: 1883,
 };
@@ -30,14 +29,13 @@ const handlers = {
         publish_player('1-1', 'stop-video', file_path);
     },
 
-    start_4k_video: () => {
-        publish_4k_player('1', 'start');
-        console.log('hello');
+
+    tower_action: (mode) => {
+        towerAction(mode);
     },
 
-    stop_4k_video: () => {
-        publish_4k_player('1', 'stop');
-        console.log('hello');
+    fog_action: (mode) => {
+        smoke(mode);
     }
 
 };
@@ -58,10 +56,10 @@ function publish_player(id, mode, _file_path) {
     });
 }
 
-function publish_4k_player(id, mode) {
+function smoke(_payload) {
     var message = {
-        topic: `4k/4k-player/${id}/${mode}`,
-        payload: "", // or a Buffer
+        topic: `tower/mqtt-media-player/fog`,
+        payload: _payload, // or a Buffer
         qos: 0, // 0, 1, or 2
         retain: false // or true
     };
@@ -71,6 +69,19 @@ function publish_4k_player(id, mode) {
     });
 }
 
+function towerAction(mode) {
+    var message = {
+        topic: "Control/Out",
+        payload: `${mode}`, // or a Buffer
+        qos: 0, // 0, 1, or 2
+        retain: false // or true
+    };
+    server.publish(message, function () {
+        console.log(message);
+    });
+}
+
+function done() { console.log('DONE'); }
 
 // fired when a message is received
 server.on('published', function (packet, client) {
